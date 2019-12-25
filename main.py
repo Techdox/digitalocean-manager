@@ -22,7 +22,7 @@ def dropletsLog():
     with alive_bar() as bar:
         for droplet in my_droplets:
             print(f"Pulling logs for {droplet}")
-            print(droplet.get_events(), file=open("droplet_events.txt", "a"))
+            print(f" NAME: {droplet.name}, Public IP: {droplet.ip_address}, DROPLET STATUS: {droplet.status}", file=open("droplet_events.txt", "a"))
             bar()
 
 def main():
@@ -66,7 +66,6 @@ def createDroplet():
     backups=False)
 
     newDroplet.create()
-
 #Functions End
 
 
