@@ -16,7 +16,9 @@ keys = manager.get_all_sshkeys()
 #Functions Start
 def dropletsList():
     for droplet in my_droplets:
-        print(droplet)
+        print(droplet, droplet.ip_address)
+    input("Press [Enter] to return to the main screen")
+    main()
 
 def dropletsLog():
     with alive_bar() as bar:
@@ -24,6 +26,21 @@ def dropletsLog():
             print(f"Pulling logs for {droplet}")
             print(f" NAME: {droplet.name}, Public IP: {droplet.ip_address}, DROPLET STATUS: {droplet.status}", file=open("droplet_events.txt", "a"))
             bar()
+    input("Press [Enter] to return to the main screen")
+
+def dropletDelete():
+    for droplet in my_droplets:
+        print((droplet.id, droplet.name))
+    delChoice = input("Enter in Droplet ID")
+    for droplet in my_droplets:
+        if droplet.name == delChoice:
+            confirm = input(f"Do you want to delete {droplet.name}?: Y|N").lower()
+            if confirm == 'y':
+                print(f'Deleting {droplet.name}')
+                droplet.destroy()
+            else:
+                main()
+    
 
 def main():
     print("""
@@ -35,6 +52,7 @@ Digital Ocean Manager
 [2] Export Droplet Logs
 [3] Create Droplet
 [4] Upload local SSH key to Digital Ocean
+[5] Delete Droplet
     """)
     choice = input("Select from the menu: ")
     if choice == '1':
@@ -45,6 +63,8 @@ Digital Ocean Manager
         createDroplet()
     elif choice == '4':
         dropletSSHKey()
+    elif choice == '5':
+        dropletDelete()
     else:
         print(":(")
 
@@ -55,6 +75,8 @@ def dropletSSHKey():
              public_key=user_ssh_key)
     key.create()
     print("Key Created")
+    input("Press [Enter] to return to the main screen")
+    main()
 
 def createDroplet():
     newDroplet = digitalocean.Droplet(token=API_SECRET,
@@ -64,8 +86,10 @@ def createDroplet():
     size_slug='512mb',
     ssh_keys=keys,
     backups=False)
-
     newDroplet.create()
+    print(f"{newDroplet.name} Created. The IP Address for SSH Connection is: {newDroplet.ip_address}")
+    input("Press [Enter] to return to the main screen")
+    main()
 #Functions End
 
 
