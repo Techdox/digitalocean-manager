@@ -3,9 +3,10 @@ import digitalocean
 from digitalocean import SSHKey
 import os
 from alive_progress import alive_bar
+
 #Import End
 
-#Gloabl Variables Start
+#Variables Start
 USER = os.environ.get("USER")
 API_SECRET = os.environ.get("TOKEN")
 manager = digitalocean.Manager(token=API_SECRET)
@@ -13,11 +14,9 @@ my_droplets = manager.get_all_droplets()
 keys = manager.get_all_sshkeys()
 images = manager.get_global_images()
 
-
-#Global Varibles End
+#Varibles End
 
 #Functions Start
-
 def dropletsListImages():
     for image in images:
         print(image.slug)
@@ -97,6 +96,7 @@ def dropletSSHKey():
     main()
 
 def dropletCreate():
+    global my_droplets
     dropletName = input("Enter in your droplet name: (No spaces of underscores) ")
     dropletRegion = input("Enter in droplet region: ")
     dropletImage = input("Enter in droplet image: ")
@@ -109,8 +109,8 @@ def dropletCreate():
     ssh_keys=keys,
     backups=False)
     newDroplet.create()
-    my_droplets.append(newDroplet)
-    print(f"{newDroplet.name} Created. The IP Address for SSH Connection is: {newDroplet.ip_address}")
+    my_droplets = manager.get_all_droplets()
+    print(f"{newDroplet.name} Created.")
     input("Press [Enter] to return to the main screen")
     main()
 #Functions End
